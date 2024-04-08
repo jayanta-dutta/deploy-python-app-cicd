@@ -38,11 +38,12 @@ jobs:
         id: deploy
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}" --quiet
-          mkdir temp_src_function && cp main.py requirements.txt temp_src_function/
-          gcloud functions deploy my-python-app-test \
+          folder_name=temp_src_function_${{ env.GITHUB_SHA_SHORT }}
+          mkdir $folder_name && cp main.py requirements.txt $folder_name/
+          gcloud functions deploy my-python-app-1 \
               --region=europe-west1 \
               --runtime=python312 \
-              --source=temp_src_function \
+              --source=$folder_name \
               --service-account deploy-python-app@profound-coyote-418718.iam.gserviceaccount.com \
               --memory=256MB \
               --timeout=300 \
