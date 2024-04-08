@@ -40,7 +40,6 @@ jobs:
           gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}" --quiet
           mkdir temp_src_function && cp main.py requirements.txt temp_src_function/
           gcloud functions deploy my-python-app-test \
-              --gen2
               --region=europe-west1 \
               --runtime=python312 \
               --source=temp_src_function \
