@@ -39,11 +39,12 @@ jobs:
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}" --quiet
           mkdir temp_source && cp main.py requirements.txt temp_source/
-          gcloud functions deploy my-python-app \
+          gcloud functions deploy my-python-app-test \
               --region=europe-west1 \
               --runtime=python39 \
               --source=temp_source \
-              --memory=1024MB \
+              --service-account deploy-python-app@profound-coyote-418718.iam.gserviceaccount.com \
+              --memory=512MB \
               --timeout=300 \
               --trigger-http \
               --allow-unauthenticated
