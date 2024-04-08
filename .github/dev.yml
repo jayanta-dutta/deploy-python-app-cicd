@@ -1,0 +1,82 @@
+name: Deploy app
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
+  checks: 'write'
+
+jobs:
+  # <-------------------  BUILD IMAGE -------------------->
+  build-image:
+    name: Build Image
+    runs-on: ubuntu-latest
+    outputs:
+      image-name: ${{ steps.build-image.outputs.imageFullName }}
+      image-tag: ${{ steps.build-image.outputs.tags }}
+      branch: ${{ env.GITHUB_REF_SLUG_URL }}
+    steps:
+      # PREP STEPS
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Authenticate to GCP (SA Key)
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.APPLICATION_SA }}
+
+      # BUILD AND PUSH THE IMAGE
+      - name: Build & Push Image
+        id: build-image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: my-image/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG_URL }}
+          registry: "eu.gcr.io"
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+
+  # <------------------ DEPLOY APP ------------------->
+  deploy-app:
+    name: Deploy app
+    needs: build-image
+    runs-on: ubuntu-latest
+    outputs:
+      env_url: ${{ steps.deploy.outputs.url }}
+    environment:
+      name: ${{ needs.build-image.outputs.branch }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Authenticate to GCP (SA Key)
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.APPLICATION_SA }}
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        run: |-
+          gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}" --quiet
+          gcloud run deploy ${{ env.GITHUB_REF_SLUG_URL }}-${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }} \
+                      --port 8080 \
+                      --project "profound-coyote-418718" \
+                      --region "europe-west1" \
+                      --image "${{ needs.build-image.outputs.image-name }}:${{ needs.build-image.outputs.image-tag }}" \
+                      --memory "2048Mi" \
+                      --cpu "1" \
+                      --timeout "5m" \
+                      --concurrency "45" \
+                      --min-instances "0" \
+                      --max-instances "1" \
+                      --service-account deploy-python-app@profound-coyote-418718.iam.gserviceaccount.comz \
+                      --platform managed \
+                      --no-allow-unauthenticated
