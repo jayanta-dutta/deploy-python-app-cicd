@@ -58,7 +58,6 @@ jobs:
           
           #echo "image_name=gcr.io/$IMAGE_NAME:latest" >> $GITHUB_OUTPUT
 
-
   # <------------------ DEPLOY APP to GCP ------------------->
   deploy-app:
     name: Deploy app
