@@ -12,11 +12,9 @@ env:
   PROJECT_ID: profound-coyote-418718
 
 jobs:
-
   # <------------------ DEPLOY APP to GCP ------------------->
   deploy-app:
     name: Deploy app
-    needs: build-image
     runs-on: self-hosted
     outputs:
       env_url: ${{ steps.deploy.outputs.url }}
