@@ -32,7 +32,9 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v1
         with:
+          token_format: auth_token
           credentials_json: ${{ secrets.APPLICATION_SA }}
+          export_default_credentials: true
 
       # BUILD AND PUSH THE IMAGE
       - name: Build & Push Image
@@ -42,7 +44,7 @@ jobs:
           image: ${{ env.PROJECT_ID }}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG_URL }}
           registry: "eu.gcr.io"
           username: _json_key
-          password: ${{ steps.auth.outputs.access_token }}
+          password: ${{ steps.auth.outputs.auth_token }}
 
   # <------------------ DEPLOY APP to GCP ------------------->
   deploy-app:
