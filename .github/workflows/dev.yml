@@ -8,6 +8,8 @@ permissions:
   contents: 'read'
   id-token: 'write'
   checks: 'write'
+env:
+  PROJECT_ID: profound-coyote-418718
 
 jobs:
   # <-------------------  BUILD IMAGE -------------------->
@@ -37,9 +39,9 @@ jobs:
         id: build-image
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
-          image: my-image/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG_URL }}
+          image: ${{ env.PROJECT_ID }}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG_URL }}
           registry: "eu.gcr.io"
-          username: oauth2accesstoken
+          username: _json_key
           password: ${{ steps.auth.outputs.access_token }}
 
   # <------------------ DEPLOY APP to GCP ------------------->
@@ -68,7 +70,7 @@ jobs:
           gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}" --quiet
           gcloud run deploy ${{ env.GITHUB_REF_SLUG_URL }}-${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }} \
                       --port 8080 \
-                      --project "profound-coyote-418718" \
+                      --project ${{ env.PROJECT_ID }}\
                       --region "europe-west1" \
                       --image "${{ needs.build-image.outputs.image-name }}:${{ needs.build-image.outputs.image-tag }}" \
                       --memory "2048Mi" \
