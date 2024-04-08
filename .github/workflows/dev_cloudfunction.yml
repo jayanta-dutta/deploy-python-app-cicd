@@ -22,6 +22,9 @@ jobs:
       name: ${{ needs.build-image.outputs.branch }}
       url: ${{ steps.deploy.outputs.url }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v4
 
