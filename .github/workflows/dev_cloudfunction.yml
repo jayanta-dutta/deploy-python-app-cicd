@@ -52,5 +52,5 @@ jobs:
               --timeout=300 \
               --trigger-http \
               --entry-point=hello_http
-              --allow-unauthenticated
+              #--allow-unauthenticated
           
