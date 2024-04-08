@@ -13,7 +13,7 @@ jobs:
   # <-------------------  BUILD IMAGE -------------------->
   build-image:
     name: Build Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       image-name: ${{ steps.build-image.outputs.imageFullName }}
       image-tag: ${{ steps.build-image.outputs.tags }}
@@ -46,7 +46,7 @@ jobs:
   deploy-app:
     name: Deploy app
     needs: build-image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       env_url: ${{ steps.deploy.outputs.url }}
     environment:
