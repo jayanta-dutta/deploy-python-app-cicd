@@ -31,7 +31,10 @@ jobs:
         with:
           credentials_json: ${{ secrets.APPLICATION_SA }}
 
-      - name: Deploy to Cloud Run
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud function
         id: deploy
         run: |-
           gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}" --quiet
