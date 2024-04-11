@@ -27,7 +27,9 @@ jobs:
           #sudo apt install python3.11 pipx
           #python3.11 --version
           #pipx install Flask
-          ls -lrt && source venv/bin/activate && pip3 install flask
+          ls -lrt
+          python3 -m venv venv 
+          source venv/bin/activate && pip3 install flask
 
       - name: Run unit test
         run: python3 -m unittest discover -s tests
