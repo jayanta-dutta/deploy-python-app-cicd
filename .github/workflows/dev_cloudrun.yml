@@ -57,6 +57,21 @@ jobs:
 #          docker push gcr.io/$IMAGE_NAME:latest
           
           #echo "image_name=gcr.io/$IMAGE_NAME:latest" >> $GITHUB_OUTPUT
+  # <-------------------  UNIT TEST -------------------->
+  unit-test:
+    name: Run unit test
+    runs-on: self-hosted
+    steps:
+      # PREP STEPS
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Run unit test
+        run: python3 -m unittest discover -s tests
 
   # <------------------ DEPLOY APP to GCP ------------------->
   deploy-app:
@@ -71,13 +86,6 @@ jobs:
     steps:
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v4
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Run unit test
-        run: python -m unittest discover -s tests
 
       - name: Authenticate to GCP (SA Key)
         id: auth
