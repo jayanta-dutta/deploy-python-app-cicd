@@ -72,6 +72,13 @@ jobs:
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v4
 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Run unit test
+        run: python -m unittest discover -s tests
+
       - name: Authenticate to GCP (SA Key)
         id: auth
         uses: google-github-actions/auth@v1
