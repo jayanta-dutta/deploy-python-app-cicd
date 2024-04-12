@@ -16,7 +16,7 @@ class TestApp(unittest.TestCase):
     def test_hello_world(self):
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.decode('utf-8'), 'Hello Tech bytes!')
+        self.assertEqual(response.data.decode('utf-8'), 'Welcome to Tech bytes!')
 
 
 if __name__ == '__main__':
