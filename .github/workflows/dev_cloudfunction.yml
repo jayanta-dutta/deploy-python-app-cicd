@@ -47,7 +47,7 @@ jobs:
               --region=europe-west1 \
               --runtime=python312 \
               --source=$folder_name \
-              --service-account deploy-python-app@profound-coyote-418718.iam.gserviceaccount.com \
+              --service-account ${{ secrets.GCP_SA_ACCNT_NAME }} \
               --memory=256MB \
               --timeout=300 \
               --trigger-http \
