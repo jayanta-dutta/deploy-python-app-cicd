@@ -9,7 +9,7 @@ permissions:
   id-token: 'write'
   checks: 'write'
 env:
-  PROJECT_ID: profound-coyote-418718
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
 jobs:
   # <-------------------  UNIT TEST -------------------->
