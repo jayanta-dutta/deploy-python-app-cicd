@@ -116,6 +116,6 @@ jobs:
                       --concurrency "45" \
                       --min-instances "0" \
                       --max-instances "1" \
-                      --service-account deploy-python-app@profound-coyote-418718.iam.gserviceaccount.com \
+                      --service-account ${{ secrets.GCP_SA_ACCNT_NAME }} \
                       --platform managed \
                       --no-allow-unauthenticated
